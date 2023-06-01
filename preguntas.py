@@ -8,6 +8,7 @@ Este archivo contiene las preguntas que se van a realizar en el laboratorio.
 Utilice los archivos `tbl0.tsv`, `tbl1.tsv` y `tbl2.tsv`, para resolver las preguntas.
 
 """
+
 from posixpath import split
 from unicodedata import numeric
 import pandas as pd
@@ -18,7 +19,15 @@ tbl2 = pd.read_csv("tbl2.tsv", sep="\t")
 
 
 def pregunta_01():
-    return len(tbl0)
+    """
+    ¿Cuál es la cantidad de filas en la tabla `tbl0.tsv`?
+
+    Rta/
+    40
+
+    """
+    return
+
 
 def pregunta_02():
     return len(tbl0.columns)
