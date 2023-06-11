@@ -1,4 +1,3 @@
- 
 """
 Laboratorio - Manipulación de Datos usando Pandas
 -----------------------------------------------------------------------------------------
@@ -23,8 +22,8 @@ def pregunta_01():
     40
 
     """
-    fila = len(tbl0)
-    return fila
+    filas = len(tbl0)
+    return filas
 
 
 def pregunta_02():
@@ -35,8 +34,8 @@ def pregunta_02():
     4
 
     """
-    columna = tbl0.shape
-    return columna[1]
+    columnas = tbl0.shape
+    return columnas[1]
 
 def pregunta_03():
     """
@@ -52,8 +51,8 @@ def pregunta_03():
     Name: _c1, dtype: int64
 
     """
-    cantidad = tbl0.groupby('_c1')['_c1'].count()
-    return cantidad
+    cant = tbl0.groupby('_c1')['_c1'].count()
+    return cant
 
 def pregunta_04():
     """
@@ -67,8 +66,8 @@ def pregunta_04():
     E    4.785714
     Name: _c2, dtype: float64
     """
-    cantidad = tbl0.groupby('_c1')['_c2'].mean()
-    return cantidad
+    cant = tbl0.groupby('_c1')['_c2'].mean()
+    return cant
 
 
 def pregunta_05():
@@ -85,8 +84,8 @@ def pregunta_05():
     E    9
     Name: _c2, dtype: int64
     """
-    cantidad = tbl0.groupby('_c1')['_c2'].max()
-    return cantidad
+    cant = tbl0.groupby('_c1')['_c2'].max()
+    return cant
     
 
 def pregunta_06():
@@ -117,8 +116,8 @@ def pregunta_07():
     E    67
     Name: _c2, dtype: int64
     """
-    cantidad = tbl0.groupby('_c1')['_c2'].sum()
-    return cantidad
+    cant = tbl0.groupby('_c1')['_c2'].sum()
+    return cant
 
 
 def pregunta_08():
@@ -243,4 +242,3 @@ def pregunta_13():
     fusion = pd.merge(tbl0, tbl2, on='_c0')
     cant = fusion.groupby('_c1')['_c5b'].sum()
     return cant
-
