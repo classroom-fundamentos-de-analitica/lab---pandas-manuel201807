@@ -7,8 +7,6 @@ Este archivo contiene las preguntas que se van a realizar en el laboratorio.
 Utilice los archivos `tbl0.tsv`, `tbl1.tsv` y `tbl2.tsv`, para resolver las preguntas.
 
 """
-from posixpath import split
-from unicodedata import numeric
 import pandas as pd
 
 tbl0 = pd.read_csv("tbl0.tsv", sep="\t")
@@ -17,107 +15,84 @@ tbl2 = pd.read_csv("tbl2.tsv", sep="\t")
 
 
 def pregunta_01():
-    return len(tbl0)
+    f = len(tbl0)
+    return f
+
 
 def pregunta_02():
-    return len(tbl0.columns)
+    col = tbl0.shape
+    return col[1]
+
 
 def pregunta_03():
-    return tbl0['_c1'].value_counts().sort_index()
+    reg = tbl0.groupby('_c1')['_c1'].count()
+    return reg
+
 
 def pregunta_04():
-    respuesta = tbl0[['_c1', '_c2']].groupby(['_c1']).mean()
-    serie = respuesta.squeeze()
-    return serie
+    prom = tbl0.groupby('_c1')['_c2'].mean()
+    return prom
+
 
 def pregunta_05():
-    respuesta = tbl0[['_c1', '_c2']].groupby(['_c1']).max()
-    serie = respuesta.squeeze()
-    return serie
+    valorMax = tbl0.groupby('_c1')['_c2'].max()
+    return valorMax
+
 
 def pregunta_06():
     unicos = tbl1['_c4'].unique()
-    salida = sorted(map(lambda x: x.upper(), unicos))
-    return salida
+    unicos = list(unicos)
+    unicos.sort()
+    return [letra.upper() for letra in unicos]
+
 
 def pregunta_07():
-    respuesta = tbl0[['_c1', '_c2']].groupby(['_c1']).sum()
-    serie = respuesta.squeeze()
-    return serie
+    suma = tbl0.groupby('_c1')['_c2'].sum()
+    return suma
+
 
 def pregunta_08():
-    sumas = tbl0.sum(numeric_only=True, axis=1).tolist()
-    nuevoDf = tbl0.copy()
-    nuevoDf['suma'] = sumas 
-    return nuevoDf
+    tbl0['suma'] = tbl0['_c0'] + tbl0['_c2']
+    return tbl0
+
 
 def pregunta_09():
-    c3 = tbl0['_c3'].tolist()
-    years = list(map(lambda x: x.split('-')[0], c3))
-    nuevoDf = tbl0.copy()
-    nuevoDf['year'] = years
-    return nuevoDf
+    tbl0['year'] = tbl0['_c3'].map(lambda x: x.split('-')[0])
+    return tbl0
+
 
 def pregunta_10():
-    valores = tbl0[['_c1', '_c2']].groupby(['_c1'])['_c2'].apply(list).tolist()
-    c2 = []
+    letras = sorted(tbl0._c1.unique())
+    data = {"_c2": []}
+    for letra in letras:
+        valoresC2 = sorted(tbl0[tbl0._c1 == letra]._c2)
+        listaC2 = [str(i) for i in valoresC2]
+        valorString = ":".join(listaC2)
+        data["_c2"] = data["_c2"] + [valorString]
+    result = pd.DataFrame(data, index=pd.Series(letras, name="_c1"))
+    return result
 
-    for letra in valores:
-        texto = ''
-        for valor in sorted(letra):
-            texto += f'{valor}:'
-        
-        c2.append(texto[:-1])
-
-    return pd.DataFrame({
-        '_c2': c2
-    }, index = pd.Series(['A', 'B', 'C', 'D', 'E'], name='_c1'))
 
 def pregunta_11():
-    valores = tbl1.groupby(['_c0'])['_c4'].apply(list).tolist()
-    c0 = tbl1['_c0'].unique().tolist()
-    c4 = []
+    numeros = tbl1._c0.unique()
+    data = {"_c0": numeros, "_c4": []}
+    for numero in numeros:
+        valores = sorted(tbl1[tbl1._c0 == numero]._c4)
+        valoresString = ",".join(valores)
+        data["_c4"] += [valoresString]
+    result = pd.DataFrame(data)
+    return result
 
-    for numero in valores:
-        texto = ''
-        for valor in sorted(numero):
-            texto += f'{valor},'
-        
-        c4.append(texto[:-1])
-
-    return pd.DataFrame({
-        '_c0': c0,
-        '_c4': c4
-    })
 
 def pregunta_12():
-    c5a = tbl2.groupby(['_c0'])['_c5a'].apply(list).tolist()
-    c5b = tbl2.groupby(['_c0'])['_c5b'].apply(list).tolist()
-    c0 = tbl1['_c0'].unique().tolist()
-    
-    c5 = []
+    tbl2['_c5b'] = tbl2['_c5b'].apply(lambda x: str(x))
+    tbl2['_c5'] = tbl2[['_c5a', '_c5b']].apply(':'.join, axis=1)
+    col0 = sorted(list(tbl2['_c0'].unique()))
+    col5 = tbl2.groupby('_c0')['_c5'].apply(lambda x: ','.join(e for e in sorted(x)))
 
-    for i in range(len(c5a)):
-        x = []
+    result = pd.DataFrame({'_c0': col0, "_c5": list(col5.array)})
+    return result
 
-        for j in range(len(c5a[i])):
-            x.append(f'{c5a[i][j]}:{c5b[i][j]}')
-        
-        texto = ''
-
-        for valor in sorted(x):
-            texto += f'{valor},'
-
-        c5.append(texto[:-1])
-
-    return pd.DataFrame({
-        '_c0': c0,
-        '_c5': c5
-    })
 
 def pregunta_13():
-    join = pd.merge(tbl0, tbl2, on='_c0', how='inner')
-
-    respuesta = join[['_c1', '_c5b']].groupby(['_c1']).sum()
-    serie = respuesta.squeeze()
-    return serie
+    return ((pd.merge(tbl2,tbl0).groupby("_c1").sum()["_c5b"]))
